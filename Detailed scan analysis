@@ -1,0 +1,86 @@
+1. Nmap SYN Scan ( -sS) - TCP Ports
+  Purpose : A stealthy scan method that sends a SYN request to determine if a port is open, without establishing a full connection.
+
+Findings :
+  Open Ports :
+
+      FTP (21) : File Transfer Protocol used for transferring files.
+      SSH (22) : Secure Shell, a secure remote login service.
+      Telnet (23) : Older, insecure remote login service.
+      HTTP (80) : Web server.
+      MySQL (3306) : Database service, vulnerable if weak passwords are used.
+      PostgreSQL (5432) : Database service.
+      NetBIOS (139, 445) : Used for file and printer sharing in Windows-based systems.
+      Metasploit Root Shell (1524) : Backdoor vulnerability (CVE-2011-2523), this port is used for unauthorized root access to the system, which is a critical security issue.
+      
+      Vulnerabilities :
+      Metasploitable 2 has several open ports with outdated and insecure services. The Metasploit root shell backdoor (port 1524) is a significant vulnerability, as it allows attackers to gain root access to the system.
+      
+      Telnet (port 23) and FTP (port 21) are also insecure protocols that transmit data in plaintext, making them vulnerable to interception.
+
+
+
+2. Nmap UDP Scan ( -sU)
+  Purpose : Identifies open UDP ports . Unlike TCP, UDP doesn't require a full connection, making it less reliable for ensuring open services.
+
+Findings :
+  Open UDP Ports :
+
+      DNS (53) : Domain Name System, a critical service for translating domain names to IP addresses.
+      DHCP (68) : Dynamic Host Configuration Protocol, used for automatic IP address assignment.
+      TFTP (69) : Trivial File Transfer Protocol, used for basic file transfers.
+      NFS (2049) : Network File System, which allows remote access to files.
+      
+      Vulnerabilities :
+      Open NFS (port 2049) could be exploited to access files on the system.
+      TFTP (port 69) is typically used for simpler file transfers but can be vulnerable to unauthorized file access if misconfigured.
+      DNS and DHCP services, if not secured properly, may lead to denial of service attacks or allow attackers to manipulate network configurations.
+
+
+3. Nmap Service Version Detection ( -sV)
+  Purpose : Identifies the versions of services running on open ports, which helps to determine if there are known vulnerabilities associated with those versions.
+
+Findings :
+  Outdated Versions Detected :
+
+      vsftpd 2.3.4 : Known for a backdoor vulnerability (CVE-2011-2523). This allows unauthorized access to the system via FTP.
+      OpenSSH 4.7p1 : An outdated version of SSH with potential security flaws, such as weak cryptographic algorithms.
+      Apache 2.2.8 : A web server version that is outdated and vulnerable, especially with the WebDAV module enabled. This module can be exploited if improperly configured.
+      Samba smbd 3.X - 4.X : Older version of Samba , a service used for file sharing. It might be vulnerable to SMB-related exploits (eg, EternalBlue ).
+      
+      Vulnerabilities :
+      vsftpd 2.3.4 : Backdoor in the FTP service that can be exploited for remote access, posing a critical security risk.
+      OpenSSH 4.7p1 : Being outdated, it could be vulnerable to several exploits in older SSH protocols, like CVE-2009-0034 and CVE-2008-5161 .
+      Apache 2.2.8 : The WebDAV module might be vulnerable to denial of service (DoS) or remote code execution if exposed to the internet.
+      Samba 3.X - 4.X : This version is known for various SMB exploits , which could lead to unauthorized file access or remote code execution .
+
+
+
+4. Nmap OS Detection ( -O)
+  Purpose : Attempts to determine the operating system (OS) running on the target system by analyzing network responses.
+
+Findings :
+  Operating System Detected : Linux 2.6.9 - 2.6.33 .
+
+Vulnerabilities :
+    The target is running an outdated version of Linux . This version is over a decade old and could be vulnerable to known exploits in its kernel, such as CVE-2009-1185 (local privilege escalation) and CVE-2010-3081 (race condition vulnerability in file handling).
+    Systems running older Linux kernels often lack critical security patches, making them easy targets for attackers.
+
+Summary of Vulnerabilities Found
+    Metasploitable 2 has several outdated and vulnerable services running, such as vsftpd 2.3.4 , OpenSSH 4.7p1 , Apache 2.2.8 , and Samba .
+    The root shell backdoor on port 1524 is a major security risk and can allow attackers to gain unauthorized access to the system.
+    Telnet and FTP are insecure protocols that transmit data in plaintext and should be avoided in favor of more secure alternatives like SSH .
+    The system is running an outdated Linux OS , which could have several unpatched vulnerabilities.
+
+What You Can Do Next
+1. Exploit the Vulnerabilities
+    Use Metasploit or other tools to exploit the vsftpd backdoor or Metasploitable root shell vulnerability (port 1524).
+    Exploit outdated Apache , Samba , or OpenSSH services using publicly known exploit modules .
+
+2. Perform Additional Scanning
+    Run OpenVAS or Nessus to scan for additional vulnerabilities and ensure the full surface area is tested.
+
+3. Secure the Services
+    Update the software to the latest versions, especially vsftpd , OpenSSH , Apache , and Samba .
+    Disable insecure services like Telnet and FTP and replace them with more secure alternatives such as SSH .
+    Patch the Linux kernel and update the system to reduce risks from old, unpatched vulnerabilities.
